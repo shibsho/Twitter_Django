@@ -3,6 +3,13 @@
         <title>Twitter_Django</title>
     </head>
     <body>
-        <h1>User Profile Page</h1>
+        <h1>User Name：{{ user.username }}</h1>
+        <p>苗字：{{ user.last_name }}</p>
+        <p>名前：{{ user.first_name }}</p>
+        <p>メール：{{ user.email }}</p>
+        <p>{{ user.is_active }}</p>
+        <p>スーパーユーザー：{{ user.is_superuser }}</p>
+        <p>ラストログイン：{{ user.last_login }}</p>
+        <p>登録日：{{ user.date_joined }}</p>
     </body>
 </html>
