@@ -4,4 +4,5 @@ from . import views
 app_name='apps'
 urlpatterns = [
     path('', views.tweet_list, name='tweet_list'),
+    path('<int:pk>', views.profile, name='profile'),
 ]
