@@ -11,5 +11,10 @@
         <p>スーパーユーザー：{{ user.is_superuser }}</p>
         <p>ラストログイン：{{ user.last_login }}</p>
         <p>登録日：{{ user.date_joined }}</p>
+        <h2>{{ user.username }}のつぶやき</h2>
+            {% for tweet in tweets %}
+                <p>投稿日時：{{ tweet.created_date }}</p>
+                <p>{{ tweet.text }}</p>
+            {% endfor %}
     </body>
 </html>
