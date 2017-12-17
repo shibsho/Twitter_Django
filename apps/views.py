@@ -11,11 +11,11 @@ def tweet_list(request):
 
 
 def profile(request,pk):
-	user = get_object_or_404(User,pk=pk)
+	user = get_object_or_404(User, pk=pk)
 	tweets = user.tweet_set.all().order_by('-created_date')
 	following_relations = Relationship.objects.filter(from_user=user)
 	followed_relations = Relationship.objects.filter(target_user=user)
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_relations': following_relations, 'followed_relations': followed_relations})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_relations': following_relations, 'followed_relations': followed_relations,})
 
 
 def tweet_new(request):
@@ -29,3 +29,8 @@ def tweet_new(request):
 	else:
 		form = TweetForm()
 	return render(request, 'apps/tweet_new.html', {'form': form})
+
+
+def tweet_detail(request,pk):
+	tweet = get_object_or_404(Tweet, pk=pk)
+	return render(request, 'apps/tweet_detail.html', {'tweet': tweet,})
