@@ -1,14 +1,10 @@
-<html>
-    <head>
-        <title>Twitter_Django</title>
-    </head>
-    <body>
-        <div class="page-header">
+{% extends 'base.html' %}
 
-            <h1><a href="{% url 'apps:tweet_list' %}">Twitter_Django</a></h1>
-            {% for tweet in tweets %}
-                <strong>{{ tweet.user }}</strong>
-                <p>{{ tweet.text }}</p>
-            {% endfor %}
-    </body>
-</html>
+{% block content %}
+    <h1><a href="{% url 'apps:tweet_list' %}">Twitter_Django</a></h1>
+
+    {% for tweet in tweets %}
+        <strong>{{ tweet.user }}</strong>
+        <p>{{ tweet.text }}</p>
+    {% endfor %}
+{% endblock %}
