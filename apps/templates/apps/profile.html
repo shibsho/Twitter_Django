@@ -9,6 +9,19 @@
     <p>スーパーユーザー：{{ user.is_superuser }}</p>
     <p>ラストログイン：{{ user.last_login }}</p>
     <p>登録日：{{ user.date_joined }}</p>
+    <p>--------------------------------------------------</p>
+    <h2>フォロー中のユーザー</h2>
+        {% for following_relation in following_relations %}
+            <p><a href="{% url 'apps:profile' pk=following_relation.target_user.pk %}">{{ following_relation.target_user }}</a></p>
+        {% endfor %}
+
+    <h2>フォロワー</h2>
+        {% for followed_relation in followed_relations %}
+            <p><a href="{% url 'apps:profile' pk=followed_relation.from_user.pk %}">{{ followed_relation.from_user }}</a></p>
+        {% endfor %}
+
+    <p>--------------------------------------------------</p>
+
     <h2>{{ user.username }}のつぶやき</h2>
         {% for tweet in tweets %}
             <p>投稿日時：{{ tweet.created_date }}</p>
