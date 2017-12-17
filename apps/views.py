@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Tweet
 from django.contrib.auth.models import User
 from django.utils import timezone
+from .forms import TweetForm
 
 # Create your views here.
 def tweet_list(request):
@@ -13,3 +14,16 @@ def profile(request,pk):
 	user = get_object_or_404(User,pk=pk)
 	tweets = Tweet.objects.filter(user=user)
 	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets})
+
+
+def tweet_new(request):
+	if request.method == "POST":
+		form = TweetForm(request.POST)
+		if form.is_valid():
+			tweet = form.save(commit=False)
+			tweet.user = request.user
+			tweet.save()
+			return redirect('apps:profile', pk=request.user.pk)
+	else:
+		form = TweetForm()
+	return render(request, 'apps/tweet_new.html', {'form': form})
