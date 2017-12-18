@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from .forms import TweetForm
 
-# Create your views here.
+
 def tweet_list(request):
 	tweets = Tweet.objects.all().order_by('-created_date')
 	return render(request, 'apps/tweet_list.html', {'tweets': tweets})
@@ -22,6 +22,14 @@ def follow(request,pk):
 	from_user = request.user
 	target_user = User.objects.get(pk=pk)
 	Relationship.objects.create(from_user=from_user, target_user=target_user)
+	return redirect('apps:profile', pk=pk)
+
+
+def unfollow(request,pk):
+	from_user = request.user
+	target_user = User.objects.get(pk=pk)
+	relationship = Relationship.objects.filter(from_user=from_user, target_user=target_user)
+	relationship.delete()
 	return redirect('apps:profile', pk=pk)
 
 
