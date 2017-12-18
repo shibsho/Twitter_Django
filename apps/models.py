@@ -15,5 +15,5 @@ class Tweet(models.Model):
 
 
 class Relationship(models.Model):
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE, null='True', related_name='from_u')
-    target_user = models.ForeignKey(User, on_delete=models.CASCADE, null='True', related_name='targeter')
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_u')
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='targeter')
