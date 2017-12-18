@@ -32,5 +32,29 @@ def tweet_new(request):
 
 
 def tweet_detail(request,pk):
-	tweet = get_object_or_404(Tweet, pk=pk)
-	return render(request, 'apps/tweet_detail.html', {'tweet': tweet,})
+	if request.method == "POST":
+		tweet = get_object_or_404(Tweet,pk=pk)
+		form = TweetForm(instance=tweet)
+		tweet = form.save(commit=False)
+		tweet.delete()
+		return redirect('apps:profile', pk=request.user.pk)
+	else:
+		tweet = get_object_or_404(Tweet,pk=pk)
+		form = TweetForm(instance=tweet)
+		return render(request, 'apps/tweet_detail.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

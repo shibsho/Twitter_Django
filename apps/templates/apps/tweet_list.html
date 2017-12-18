@@ -3,6 +3,6 @@
 {% block content %}
     {% for tweet in tweets %}
         <strong><a href="{% url 'apps:profile' pk=tweet.user.pk %}">{{ tweet.user }}</a></strong>
-        <p>{{ tweet.text }}</p>
+        <p><a href="{% url 'apps:tweet_detail' pk=tweet.pk %}">{{ tweet.text }}</a></p>
     {% endfor %}
 {% endblock %}
