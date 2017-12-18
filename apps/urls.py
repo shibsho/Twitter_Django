@@ -9,4 +9,5 @@ urlpatterns = [
     path('user/<int:pk>/', views.profile, name='profile'),
     path('tweet_new/', views.tweet_new, name='tweet_new'),
     path('tweet_detail/<int:pk>/', views.tweet_detail, name='tweet_detail'),
+    path('follow/<int:pk>/', views.follow, name='follow'),
 ]

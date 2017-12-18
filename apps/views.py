@@ -18,6 +18,13 @@ def profile(request,pk):
 	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_relations': following_relations, 'followed_relations': followed_relations,})
 
 
+def follow(request,pk):
+	from_user = request.user
+	target_user = User.objects.get(pk=pk)
+	Relationship.objects.create(from_user=from_user, target_user=target_user)
+	return redirect('apps:profile', pk=pk)
+
+
 def tweet_new(request):
 	if request.method == "POST":
 		form = TweetForm(request.POST)
