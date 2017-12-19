@@ -2,6 +2,9 @@
 
 {% block content %}
     <h1>User Name：{{ user.username }}</h1>
+    <a href="{% url 'apps:follow' pk=user.id %}">フォローする</a>
+    <a href="{% url 'apps:unfollow' pk=user.id %}">フォローをやめる</a>
+
     <p>苗字：{{ user.last_name }}</p>
     <p>名前：{{ user.first_name }}</p>
     <p>メール：{{ user.email }}</p>
