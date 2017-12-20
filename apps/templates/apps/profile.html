@@ -2,8 +2,15 @@
 
 {% block content %}
     <h1>User Name：{{ user.username }}</h1>
-    <a href="{% url 'apps:follow' pk=user.id %}">フォローする</a>
-    <a href="{% url 'apps:unfollow' pk=user.id %}">フォローをやめる</a>
+    {% if user != request.user %}
+        <form action="{% url 'apps:follow' pk=user.id %}" method="POST">{% csrf_token %}
+            {% if following %}
+                <input type="submit" name="unfollow" value="フォローをやめる">
+            {% else %}
+                <input type="submit" name="follow" value="フォローする">
+            {% endif %}
+        </form>
+    {% endif %}
 
     <p>苗字：{{ user.last_name }}</p>
     <p>名前：{{ user.first_name }}</p>
@@ -14,20 +21,21 @@
     <p>登録日：{{ user.date_joined }}</p>
     <p>--------------------------------------------------</p>
     <h2>フォロー中のユーザー</h2>
-        {% for following_relation in following_relations %}
-            <p><a href="{% url 'apps:profile' pk=following_relation.target_user.pk %}">{{ following_relation.target_user }}</a></p>
+        {% for follow in follows %}
+            <p><a href="{% url 'apps:profile' pk=follow.target_user.pk %}">{{ follow.target_user }}</a></p>
         {% endfor %}
 
     <h2>フォロワー</h2>
-        {% for followed_relation in followed_relations %}
-            <p><a href="{% url 'apps:profile' pk=followed_relation.from_user.pk %}">{{ followed_relation.from_user }}</a></p>
+        {% for follower in followers %}
+            <p><a href="{% url 'apps:profile' pk=follower.from_user.pk %}">{{ follower.from_user }}</a></p>
         {% endfor %}
 
     <p>--------------------------------------------------</p>
 
     <h2>{{ user.username }}のつぶやき</h2>
-        {% for tweet in tweets %}
-            <p>投稿日時：{{ tweet.created_date }}</p>
-            <p><a href="{% url 'apps:tweet_detail' pk=tweet.pk %}">{{ tweet.text }}</a></p>
+        {% for followingtweet in followingtweets %}
+            <p><a href="{% url 'apps:profile' pk=followingtweet.user.pk %}">{{ followingtweet.user }}</a></p>
+            <p>投稿日時：{{ followingtweet.created_date }}</p>
+            <p><a href="{% url 'apps:tweet_detail' pk=followingtweet.pk %}">{{ followingtweet.text }}</a></p>
         {% endfor %}
 {% endblock %}
