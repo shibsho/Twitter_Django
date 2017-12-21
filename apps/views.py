@@ -4,6 +4,8 @@ from .models import Tweet, Relationship
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .forms import TweetForm
+from django.db.models import Q
+
 
 
 def tweet_list(request):
@@ -13,16 +15,24 @@ def tweet_list(request):
 
 def profile(request,pk):
 	user = get_object_or_404(User, pk=pk)
-	tweets = user.tweet_set.all().order_by('-created_date')
-	follows = Relationship.objects.filter(from_user=user)
+	following_users = Relationship.objects.filter(from_user=user)
 	followers = Relationship.objects.filter(target_user=user)
+	followings = Relationship.objects.filter(from_user=user).values('target_user')
 
 	if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
 		following=True
 	else:
 		following=False
 
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'follows': follows, 'followers': followers, 'following': following,})
+	if user == request.user:
+		###tweets = user.tweet_set.all().order_by('-created_date')
+		tweets = Tweet.objects.filter(Q(user=user)|Q(user__in=followings))
+		###tweets = Tweet.objects.filter(user=request.user, user = ).order_by('-created_date')
+		#tweets = follows.objects.first().target_user.tweet_set.all()
+	else:
+		tweets = user.tweet_set.all().order_by('-created_date')
+	
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_users': following_users, 'followers': followers, 'following': following, 'followigs': followings})
 
 
 
@@ -30,12 +40,9 @@ def profile(request,pk):
 def follow(request,pk):
 	user = get_object_or_404(User, pk=pk)
 	if 'follow' in request.POST:
-		if Relationship.objects.filter(from_user=request.user, target_user=user).exists(): #二重送信対策
-			pass
-		else:
-			from_user = request.user
-			target_user = User.objects.get(pk=pk)
-			Relationship.objects.create(from_user=from_user, target_user=target_user)
+		from_user = request.user
+		target_user = User.objects.get(pk=pk)
+		Relationship.objects.get_or_create(from_user=from_user, target_user=target_user)
 	elif 'unfollow' in request.POST:
 		from_user = request.user
 		target_user = User.objects.get(pk=pk)

@@ -10,6 +10,7 @@
   <div class="container">
   	<h1><a href="{% url 'apps:tweet_list' %}">Twitter_Django</a></h1>
   	<p><a href="{% url 'apps:tweet_new' %}">ツイートする</a></p>
+  	<p><a href="{% url 'apps:profile' pk=request.user.pk %}">マイページ</a></p>
     {% block content %}{% endblock %}
   </div>
 </body>
