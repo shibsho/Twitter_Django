@@ -34,6 +34,19 @@ def profile(request,pk):
 	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_users': following_users, 'follower_users': follower_users, 'following': following,})
 
 
+def followings(request,pk):
+	user = get_object_or_404(User,pk=pk)
+	followings = Relationship.objects.filter(from_user=user).values('target_user')
+	following_users = User.objects.filter(pk__in=followings)
+	return render(request, 'apps/followings.html', {'user': user, 'following_users': following_users, })
+
+
+def followers (request,pk):
+	user = get_object_or_404(User,pk=pk)
+	followers = Relationship.objects.filter(target_user=user).values('from_user')
+	follower_users = User.objects.filter(pk__in=followers)
+	return render(request, 'apps/followers.html', {'user': user, 'follower_users': follower_users, })
+
 
 @require_POST
 def follow(request,pk):
