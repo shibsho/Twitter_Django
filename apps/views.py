@@ -15,9 +15,10 @@ def tweet_list(request):
 
 def profile(request,pk):
 	user = get_object_or_404(User, pk=pk)
-	following_users = Relationship.objects.filter(from_user=user)
-	followers = Relationship.objects.filter(target_user=user)
 	followings = Relationship.objects.filter(from_user=user).values('target_user')
+	following_users = User.objects.filter(pk__in=followings)
+	followers = Relationship.objects.filter(target_user=user).values('from_user')
+	follower_users = User.objects.filter(pk__in=followers)
 
 	if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
 		following=True
@@ -25,14 +26,12 @@ def profile(request,pk):
 		following=False
 
 	if user == request.user:
-		###tweets = user.tweet_set.all().order_by('-created_date')
-		tweets = Tweet.objects.filter(Q(user=user)|Q(user__in=followings))
-		###tweets = Tweet.objects.filter(user=request.user, user = ).order_by('-created_date')
-		#tweets = follows.objects.first().target_user.tweet_set.all()
+		tweets = Tweet.objects.filter(Q(user=user)|Q(user__in=following_users)).order_by('-created_date')
 	else:
 		tweets = user.tweet_set.all().order_by('-created_date')
+	tweets_count = tweets.count()
 	
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_users': following_users, 'followers': followers, 'following': following, 'followigs': followings})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_users': following_users, 'follower_users': follower_users, 'following': following,})
 
 
 
