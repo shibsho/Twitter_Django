@@ -12,8 +12,8 @@
         </form>
     {% endif %}
     <p>ツイート：{{ tweets.count }}</p>
-    <p>フォロー：{{ following_users.count }}</p>
-    <p>フォロワー：{{ follower_users.count }}</p>
+    <p>フォロー：<a href="{% url 'apps:followings' pk=user.pk %}">{{ following_users.count }}</a></p>
+    <p>フォロワー：<a href="{% url 'apps:followers' pk=user.pk %}">{{ follower_users.count }}</a></p>
 
     <p>苗字：{{ user.last_name }}</p>
     <p>名前：{{ user.first_name }}</p>
