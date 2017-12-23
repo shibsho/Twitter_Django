@@ -16,8 +16,8 @@ def tweet_list(request):
 def profile(request,pk):
 	user = get_object_or_404(User, pk=pk)
 	followings = Relationship.objects.filter(from_user=user).values('target_user')
-	following_users = User.objects.filter(pk__in=followings)
 	followers = Relationship.objects.filter(target_user=user).values('from_user')
+	likes = Like.objects.filter(user=user)
 
 	if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
 		following=True
@@ -26,13 +26,14 @@ def profile(request,pk):
 
 	if user == request.user:
 		title = "timeline"
+		following_users = User.objects.filter(pk__in=followings)
 		tweets = Tweet.objects.filter(Q(user=user)|Q(user__in=following_users)).order_by('-created_date')
 	else:
 		title = str(user) + "のつぶやき"
 		tweets = user.tweet_set.all().order_by('-created_date')
 	tweets_count = tweets.count()
 	
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'following': following, 'title': title,})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'likes':likes, 'following': following, 'title': title,})
 
 
 def followings(request,pk):
@@ -94,13 +95,18 @@ def tweet_detail(request,pk):
 def like(request,pk):
 	tweet = Tweet.objects.get(pk=pk)
 	if 'like' in request.POST:
-		Like.objects.create(user=request.user, tweet=tweet)
+		Like.objects.get_or_create(user=request.user, tweet=tweet)
 	elif 'unlike' in request.POST:
 		like = Like.objects.filter(user=request.user, tweet=tweet)
 		like.delete()
-	return redirect('apps:tweet_detail', pk=tweet.pk,)
+	return redirect('apps:tweet_detail', pk=tweet.pk)
 
 
+def likes(request,pk):
+	user = User.objects.get(pk=pk)
+	likes = Like.objects.filter(user=user).values('tweet')
+	tweets = Tweet.objects.filter(pk__in=likes)
+	return render(request, 'apps/likes.html', {'tweets':tweets, 'user':user, })
 
 
 

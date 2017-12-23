@@ -14,7 +14,7 @@
     <p>ツイート：{{ tweets.count }}</p>
     <p>フォロー：<a href="{% url 'apps:followings' pk=user.pk %}">{{ followings.count }}</a></p>
     <p>フォロワー：<a href="{% url 'apps:followers' pk=user.pk %}">{{ followers.count }}</a></p>
-
+    <p>お気に入り：<a href="{% url 'apps:likes' pk=user.pk %}">{{ likes.count }}</a>  </p>
     <p>苗字：{{ user.last_name }}</p>
     <p>名前：{{ user.first_name }}</p>
     <p>メール：{{ user.email }}</p>

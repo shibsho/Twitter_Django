@@ -13,5 +13,5 @@ urlpatterns = [
     path('tweet_new/', views.tweet_new, name='tweet_new'),
     path('tweet_detail/<int:pk>/', views.tweet_detail, name='tweet_detail'),
     path('like/<int:pk>/', views.like, name='like'),
-
+    path('<int:pk>/likes/', views.likes, name='likes'),
 ]
