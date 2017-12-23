@@ -18,7 +18,6 @@ def profile(request,pk):
 	followings = Relationship.objects.filter(from_user=user).values('target_user')
 	following_users = User.objects.filter(pk__in=followings)
 	followers = Relationship.objects.filter(target_user=user).values('from_user')
-	follower_users = User.objects.filter(pk__in=followers)
 
 	if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
 		following=True
@@ -26,12 +25,14 @@ def profile(request,pk):
 		following=False
 
 	if user == request.user:
+		title = "timeline"
 		tweets = Tweet.objects.filter(Q(user=user)|Q(user__in=following_users)).order_by('-created_date')
 	else:
+		title = str(user) + "のつぶやき"
 		tweets = user.tweet_set.all().order_by('-created_date')
 	tweets_count = tweets.count()
 	
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'following_users': following_users, 'follower_users': follower_users, 'following': following,})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'following': following, 'title': title,})
 
 
 def followings(request,pk):

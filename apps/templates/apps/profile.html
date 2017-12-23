@@ -12,8 +12,8 @@
         </form>
     {% endif %}
     <p>ツイート：{{ tweets.count }}</p>
-    <p>フォロー：<a href="{% url 'apps:followings' pk=user.pk %}">{{ following_users.count }}</a></p>
-    <p>フォロワー：<a href="{% url 'apps:followers' pk=user.pk %}">{{ follower_users.count }}</a></p>
+    <p>フォロー：<a href="{% url 'apps:followings' pk=user.pk %}">{{ followings.count }}</a></p>
+    <p>フォロワー：<a href="{% url 'apps:followers' pk=user.pk %}">{{ followers.count }}</a></p>
 
     <p>苗字：{{ user.last_name }}</p>
     <p>名前：{{ user.first_name }}</p>
@@ -22,19 +22,10 @@
     <p>スーパーユーザー：{{ user.is_superuser }}</p>
     <p>ラストログイン：{{ user.last_login }}</p>
     <p>登録日：{{ user.date_joined }}</p>
-    <p>--------------------------------------------------</p>
-    <h2>フォロー中のユーザー</h2>
-        {% for user in following_users %}
-            <p><a href="{% url 'apps:profile' pk=user.pk %}">{{ user }}</a></p>
-        {% endfor %}
-    <h2>フォロワー</h2>
-        {% for user in follower_users %}
-            <p><a href="{% url 'apps:profile' pk=user.pk %}">{{ user }}</a></p>
-        {% endfor %}
 
     <p>--------------------------------------------------</p>
 
-    <h2>{{ user.username }}のつぶやき</h2>
+    <h2>{{ title }}</h2>
         {% for tweet in tweets %}
             <p><a href="{% url 'apps:profile' pk=tweet.user.pk %}">{{ tweet.user }}</a></p>
             <p>{{ tweet.created_date }}<a href="{% url 'apps:tweet_detail' pk=tweet.pk %}">{{ tweet.text }}</a></p>
