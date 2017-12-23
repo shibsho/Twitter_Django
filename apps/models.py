@@ -15,5 +15,10 @@ class Tweet(models.Model):
 
 
 class Relationship(models.Model):
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_u')
-    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='targeter')
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_user')
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='target_user')
+
+
+class Like(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE,)
+	tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE,)

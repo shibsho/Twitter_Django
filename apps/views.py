@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
-from .models import Tweet, Relationship
+from .models import Tweet, Relationship, Like
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .forms import TweetForm
@@ -78,16 +78,27 @@ def tweet_new(request):
 
 
 def tweet_detail(request,pk):
+	tweet = get_object_or_404(Tweet,pk=pk)
+	if Like.objects.filter(user=request.user, tweet=tweet).exists():
+		liked=True
+	else:
+		liked=False	
 	if request.method == "POST":
-		tweet = Tweet.objects.get(pk=pk)
 		tweet.delete()
 		return redirect('apps:profile', pk=request.user.pk,)
 	else:
-		tweet = get_object_or_404(Tweet,pk=pk)
-		return render(request, 'apps/tweet_detail.html', {'tweet': tweet, })
+		return render(request, 'apps/tweet_detail.html', {'tweet': tweet, 'liked':liked, })
 
 
-
+@require_POST
+def like(request,pk):
+	tweet = Tweet.objects.get(pk=pk)
+	if 'like' in request.POST:
+		Like.objects.create(user=request.user, tweet=tweet)
+	elif 'unlike' in request.POST:
+		like = Like.objects.filter(user=request.user, tweet=tweet)
+		like.delete()
+	return redirect('apps:tweet_detail', pk=tweet.pk,)
 
 
 

@@ -6,8 +6,15 @@
 	<p>{{ tweet.created_date }}</p>
 	{% if tweet.user == request.user %}
 
-	<a href="">お気に入り</a>
-	<a href="">お気に入りからはずす</a>	
+	
+        <form action="{% url 'apps:like' pk=tweet.pk %}" method="POST">{% csrf_token %}
+            {% if liked %}
+                <input type="submit" name="unlike" value="お気に入りからはずす">
+            {% else %}
+                <input type="submit" name="like" value="お気に入り">
+            {% endif %}
+        </form>
+
     <form method="POST">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit">削除する</button>
