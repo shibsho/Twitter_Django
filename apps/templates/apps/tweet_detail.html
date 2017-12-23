@@ -5,6 +5,9 @@
 	<p>{{ tweet.user }}</p>
 	<p>{{ tweet.created_date }}</p>
 	{% if tweet.user == request.user %}
+
+	<a href="">お気に入り</a>
+	<a href="">お気に入りからはずす</a>	
     <form method="POST">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit">削除する</button>
