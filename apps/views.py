@@ -28,12 +28,16 @@ def profile(request,pk):
 		title = "timeline"
 		following_users = User.objects.filter(pk__in=followings)
 		tweets = Tweet.objects.filter(Q(user=user)|Q(user__in=following_users)).order_by('-created_date')
+		if tweets.count() == 0:
+			non_tweet = "表示できるツイートはありません。誰かをフォローするか、自分でツイートしてみましょう。"
 	else:
 		title = str(user) + "のつぶやき"
 		tweets = user.tweet_set.all().order_by('-created_date')
+		if tweets.count == 0:
+			non_tweet = str(user) + "のつぶやきはまだありません。"
+
 	tweets_count = tweets.count()
-	
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'likes':likes, 'following': following, 'title': title,})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'likes':likes, 'following': following, 'title': title, 'non_tweet': non_tweet,})
 
 
 def followings(request,pk):
