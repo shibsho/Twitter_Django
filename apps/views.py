@@ -38,15 +38,16 @@ def profile(request,pk):
 
 def followings(request,pk):
 	user = get_object_or_404(User,pk=pk)
-	followings = Relationship.objects.filter(from_user=user).values('target_user')
-	following_users = User.objects.filter(pk__in=followings)
+	#followings = Relationship.objects.filter(from_user=user).values('target_user')
+	followings_pk = user.from_user.values('target_user')
+	following_users = User.objects.filter(pk__in=followings_pk)
 	return render(request, 'apps/followings.html', {'user': user, 'following_users': following_users, })
 
 
 def followers (request,pk):
 	user = get_object_or_404(User,pk=pk)
-	followers = Relationship.objects.filter(target_user=user).values('from_user')
-	follower_users = User.objects.filter(pk__in=followers)
+	followers_pk = user.target_user.values('from_user')
+	follower_users = User.objects.filter(pk__in=followers_pk)
 	return render(request, 'apps/followers.html', {'user': user, 'follower_users': follower_users, })
 
 
@@ -104,9 +105,9 @@ def like(request,pk):
 
 def likes(request,pk):
 	user = User.objects.get(pk=pk)
-	likes = Like.objects.filter(user=user).values('tweet')
-	tweets = Tweet.objects.filter(pk__in=likes)
-	return render(request, 'apps/likes.html', {'tweets':tweets, 'user':user, })
+	#likes = Like.objects.filter(user=user).values('tweet')
+	likes = user.like_set.all()
+	return render(request, 'apps/likes.html', {'likes':likes, 'user':user, })
 
 
 
