@@ -26,7 +26,9 @@
     <p>--------------------------------------------------</p>
 
     <h2>{{ title }}</h2>
-        {{ non_tweet }}
+        {% if tweets.count == 0 %}
+            {{ non_tweet }}
+        {% endif %}
         {% for tweet in tweets %}
             <p><a href="{% url 'apps:profile' pk=tweet.user.pk %}">{{ tweet.user }}</a></p>
             <p><a href="{% url 'apps:tweet_detail' pk=tweet.pk %}">{{ tweet.text }}</a></p>
