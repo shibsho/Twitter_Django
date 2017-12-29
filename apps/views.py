@@ -10,7 +10,7 @@ from django.db.models import Q
 
 def tweet_list(request):
 	tweets = Tweet.objects.all().order_by('-created_date')
-	return render(request, 'apps/tweet_list.html', {'tweets': tweets})
+	return render(request, 'apps/tweet_list.html', {'tweets': tweets, })
 
 
 def profile(request,pk):
@@ -20,8 +20,6 @@ def profile(request,pk):
 	likes = Like.objects.filter(user=user)
 
 	if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
-		following=True
-	else:
 		following=False
 
 	if user == request.user:
@@ -34,21 +32,18 @@ def profile(request,pk):
 		tweets = user.tweet_set.all().order_by('-created_date')
 		non_tweet = str(user) + "のつぶやきはまだありません。"
 
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'likes':likes, 'following': following, 'title': title, 'non_tweet': non_tweet,})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'likes':likes, 'title': title, 'non_tweet': non_tweet,})
 
 
 def followings(request,pk):
 	user = get_object_or_404(User,pk=pk)
-	#followings = Relationship.objects.filter(from_user=user).values('target_user')
-	followings_pk = user.from_user.values('target_user')
-	following_users = User.objects.filter(pk__in=followings_pk)
+	following_users = User.objects.filter(pk__in=user.from_user.values('target_user'))
 	return render(request, 'apps/followings.html', {'user': user, 'following_users': following_users, })
 
 
 def followers (request,pk):
 	user = get_object_or_404(User,pk=pk)
-	followers_pk = user.target_user.values('from_user')
-	follower_users = User.objects.filter(pk__in=followers_pk)
+	follower_users = User.objects.filter(pk__in=user.target_user.values('from_user'))
 	return render(request, 'apps/followers.html', {'user': user, 'follower_users': follower_users, })
 
 
@@ -106,7 +101,6 @@ def like(request,pk):
 
 def likes(request,pk):
 	user = User.objects.get(pk=pk)
-	#likes = Like.objects.filter(user=user).values('tweet')
 	likes = user.like_set.all()
 	return render(request, 'apps/likes.html', {'likes':likes, 'user':user, })
 

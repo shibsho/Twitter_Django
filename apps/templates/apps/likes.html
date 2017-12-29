@@ -3,7 +3,7 @@
 {% block content%}
 	<h1>{{ user }}のお気に入り</h1>
 	{% for like in likes %}
-		<p>{{ like.user }}</p>
+		<p>{{ like.tweet.user }}</p>
 		<p><a href="{% url 'apps:tweet_detail' pk=like.tweet.pk %}">{{ like.tweet.text }}</a></p>
 	{% endfor %}
 {% endblock %}
