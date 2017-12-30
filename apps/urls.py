@@ -1,6 +1,6 @@
 from django.urls import path,re_path,include
 from . import views
-
+from django.contrib.auth import views as auth_views
 
 app_name='apps'
 
@@ -14,4 +14,16 @@ urlpatterns = [
     path('tweet_detail/<int:pk>/', views.tweet_detail, name='tweet_detail'),
     path('like/<int:pk>/', views.like, name='like'),
     path('<int:pk>/likes/', views.likes, name='likes'),
+    path(
+        'login/',
+        auth_views.login,
+        {'template_name': 'apps/login.html'},
+        name='login'
+    ),
+    path(
+        'logout/',
+        auth_views.logout,
+        {'template_name': 'apps/logout.html'},
+        name='logout'
+    ),
 ]

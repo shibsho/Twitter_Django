@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'apps',
 ]
 
+LOGIN_URL = '/login/'  # ログイン画面のURL
+LOGIN_REDIRECT_URL = '/redirect/'  # /loginに直接アクセスした場合のリダイレクト
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
