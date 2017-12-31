@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,9 +39,10 @@ INSTALLED_APPS = [
     'apps',
 ]
 
-LOGIN_URL = '/login/'  # ログイン画面のURL
-LOGIN_REDIRECT_URL = '/redirect/'  # /loginに直接アクセスした場合のリダイレクト
-
+#authentication
+LOGIN_URL = 'apps:login'
+LOGIN_REDIRECT_URL = 'apps:tweet_list'
+LOGOUT_REDIRECT_URL = 'apps:tweet_list'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

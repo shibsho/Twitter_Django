@@ -1,1 +1,5 @@
-ログアウトしたとき
+{% extends 'base.html' %} 
+{% block content %} 
+ログアウトしました！
+<a href="{% url 'apps:tweet_list' %}">トップページ</a>
+{% endblock %}
