@@ -10,6 +10,7 @@
   <div class="container">
   	<h1><a href="{% url 'apps:tweet_list' %}">Twitter_Django</a></h1>
   	{% if request.user.is_authenticated %}
+  		<p><a href="{% url 'apps:profile' pk=request.user.pk %}">マイページ</a></p>
   		<p><a href="{% url 'apps:logout' %}">ログアウト</a></p>
   	{% else %}
   		<p><a href="{% url 'apps:login' %}">ログイン</a></p>
