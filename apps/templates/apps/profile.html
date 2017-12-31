@@ -4,14 +4,14 @@
     <h1>User Name：{{ user.username }}</h1>
     {% if user != request.user %}
         <form action="{% url 'apps:follow' pk=user.id %}" method="POST">{% csrf_token %}
-            {% if following %}
-                <input type="submit" name="unfollow" value="フォローをやめる">
-            {% else %}
-                {% if request.user.is_authenticated %}
-                    <input type="submit" name="follow" value="フォローする">
+            {% if request.user.is_authenticated %}
+                {% if following %}
+                    <input type="submit" name="unfollow" value="フォローをやめる">
                 {% else %}
-                    <a href="{% url 'apps:login' %}?next={{ request.path }}">フォローする</a>
+                    <input type="submit" name="follow" value="フォローする">
                 {% endif %}
+            {% else %}
+                <a href="{% url 'apps:login' %}?next={{ request.path }}">フォローする</a>
             {% endif %}
         </form>
     {% endif %}

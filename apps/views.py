@@ -19,12 +19,9 @@ def profile(request,pk):
 	followings = Relationship.objects.filter(from_user=user).values('target_user')
 	followers = Relationship.objects.filter(target_user=user).values('from_user')
 	likes = Like.objects.filter(user=user)
-	
-	if request.user.is_authenticated:
-		if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
-			following=True
-		else:
-			following=False
+
+	if request.user.is_authenticated and Relationship.objects.filter(from_user=request.user, target_user=user).exists():
+		following=True
 	else:
 		following=False
 
@@ -53,7 +50,7 @@ def followers (request,pk):
 	return render(request, 'apps/followers.html', {'user': user, 'follower_users': follower_users, })
 
 
-@login_required
+
 @require_POST
 def follow(request,pk):
 	user = get_object_or_404(User, pk=pk)
@@ -85,10 +82,11 @@ def tweet_new(request):
 
 def tweet_detail(request,pk):
 	tweet = get_object_or_404(Tweet,pk=pk)
-	if Like.objects.filter(user=request.user, tweet=tweet).exists():
+	if request.user.is_authenticated and Like.objects.filter(user=request.user, tweet=tweet).exists():
 		liked=True
 	else:
-		liked=False	
+		liked=False
+
 	if request.method == "POST":
 		tweet.delete()
 		return redirect('apps:profile', pk=request.user.pk,)
