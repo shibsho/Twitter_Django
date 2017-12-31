@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps',
 ]
+
+#authentication
+LOGIN_URL = 'apps:login'
+LOGIN_REDIRECT_URL = 'apps:tweet_list'
+LOGOUT_REDIRECT_URL = 'apps:tweet_list'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

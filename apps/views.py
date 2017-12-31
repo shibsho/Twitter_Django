@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from .models import Tweet, Relationship, Like
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .forms import TweetForm
 from django.db.models import Q
@@ -10,7 +11,7 @@ from django.db.models import Q
 
 def tweet_list(request):
 	tweets = Tweet.objects.all().order_by('-created_date')
-	return render(request, 'apps/tweet_list.html', {'tweets': tweets})
+	return render(request, 'apps/tweet_list.html', {'tweets': tweets, })
 
 
 def profile(request,pk):
@@ -18,9 +19,12 @@ def profile(request,pk):
 	followings = Relationship.objects.filter(from_user=user).values('target_user')
 	followers = Relationship.objects.filter(target_user=user).values('from_user')
 	likes = Like.objects.filter(user=user)
-
-	if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
-		following=True
+	
+	if request.user.is_authenticated:
+		if Relationship.objects.filter(from_user=request.user, target_user=user).exists():
+			following=True
+		else:
+			following=False
 	else:
 		following=False
 
@@ -34,24 +38,22 @@ def profile(request,pk):
 		tweets = user.tweet_set.all().order_by('-created_date')
 		non_tweet = str(user) + "のつぶやきはまだありません。"
 
-	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'likes':likes, 'following': following, 'title': title, 'non_tweet': non_tweet,})
+	return render(request, 'apps/profile.html', {'user':user, 'tweets': tweets, 'followings': followings, 'followers': followers, 'following':following, 'likes':likes, 'title': title, 'non_tweet': non_tweet,})
 
 
 def followings(request,pk):
 	user = get_object_or_404(User,pk=pk)
-	#followings = Relationship.objects.filter(from_user=user).values('target_user')
-	followings_pk = user.from_user.values('target_user')
-	following_users = User.objects.filter(pk__in=followings_pk)
+	following_users = User.objects.filter(pk__in=user.from_user.values('target_user'))
 	return render(request, 'apps/followings.html', {'user': user, 'following_users': following_users, })
 
 
 def followers (request,pk):
 	user = get_object_or_404(User,pk=pk)
-	followers_pk = user.target_user.values('from_user')
-	follower_users = User.objects.filter(pk__in=followers_pk)
+	follower_users = User.objects.filter(pk__in=user.target_user.values('from_user'))
 	return render(request, 'apps/followers.html', {'user': user, 'follower_users': follower_users, })
 
 
+@login_required
 @require_POST
 def follow(request,pk):
 	user = get_object_or_404(User, pk=pk)
@@ -67,6 +69,7 @@ def follow(request,pk):
 	return redirect('apps:profile', pk=pk)
 
 
+@login_required
 def tweet_new(request):
 	if request.method == "POST":
 		form = TweetForm(request.POST)
@@ -106,7 +109,6 @@ def like(request,pk):
 
 def likes(request,pk):
 	user = User.objects.get(pk=pk)
-	#likes = Like.objects.filter(user=user).values('tweet')
 	likes = user.like_set.all()
 	return render(request, 'apps/likes.html', {'likes':likes, 'user':user, })
 
