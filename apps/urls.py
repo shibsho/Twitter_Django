@@ -14,6 +14,8 @@ urlpatterns = [
     path('tweet_detail/<int:pk>/', views.tweet_detail, name='tweet_detail'),
     path('like/<int:pk>/', views.like, name='like'),
     path('<int:pk>/likes/', views.likes, name='likes'),
+    path('regist/', views.regist, name='regist'),
+    path('regist_save/', views.regist_save, name='regist_save'),
     path(
         'login/',
         auth_views.login,

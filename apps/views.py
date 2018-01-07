@@ -4,9 +4,24 @@ from .models import Tweet, Relationship, Like
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .forms import TweetForm
+from .forms import TweetForm, RegisterForm
 from django.db.models import Q
 
+
+def regist(request):
+	if not request.user.is_authenticated:
+		form = RegisterForm(request.POST or None)
+		return render(request, 'apps/regist.html', {'form': form, })
+	else:
+		return redirect('apps:profile', pk=request.user.pk)
+
+@require_POST
+def regist_save(request):
+    form = RegisterForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return redirect('apps:profile', pk=request.user.pk)
+    return render(request, 'apps/regist.html', {'form': form, })
 
 
 def tweet_list(request):
@@ -74,7 +89,7 @@ def tweet_new(request):
 			tweet = form.save(commit=False)
 			tweet.user = request.user
 			tweet.save()
-			return redirect('apps:profile', pk=request.user.pk)
+			return redirect('apps:tweet_list')
 	else:
 		form = TweetForm()
 	return render(request, 'apps/tweet_new.html', {'form': form})
@@ -109,13 +124,6 @@ def likes(request,pk):
 	user = User.objects.get(pk=pk)
 	likes = user.like_set.all()
 	return render(request, 'apps/likes.html', {'likes':likes, 'user':user, })
-
-
-
-
-
-
-
 
 
 

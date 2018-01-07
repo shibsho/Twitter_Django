@@ -14,6 +14,7 @@
   		<p><a href="{% url 'apps:logout' %}">ログアウト</a></p>
   	{% else %}
   		<p><a href="{% url 'apps:login' %}">ログイン</a></p>
+      <p><a href="{% url 'apps:regist' %}">会員登録</a></p>
   	{% endif %}
   	<p><a href="{% url 'apps:tweet_new' %}">ツイートする</a></p>
     {% block content %}{% endblock %}
