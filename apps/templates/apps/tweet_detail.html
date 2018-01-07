@@ -5,11 +5,15 @@
 	<p>{{ tweet.user }}</p>
 	<p>{{ tweet.created_date }}</p>
 	<form action="{% url 'apps:like' pk=tweet.pk %}" method="POST">{% csrf_token %}
-	    {% if liked %}
-	        <input type="submit" name="unlike" value="お気に入りからはずす">
-	    {% else %}
-	        <input type="submit" name="like" value="お気に入り">
-	    {% endif %}
+		{% if request.user.is_authenticated %}
+		    {% if liked %}
+		        <input type="submit" name="unlike" value="お気に入りからはずす">
+		    {% else %}
+		        <input type="submit" name="like" value="お気に入り">
+		    {% endif %}
+		{% else %}
+			<a href="{% url 'apps:login' %}?next={{ request.path }}">お気に入り</a>
+		{% endif %}
 	</form>
 	{% if tweet.user == request.user %}
 	    <form method="POST">{% csrf_token %}
