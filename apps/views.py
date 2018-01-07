@@ -93,7 +93,7 @@ def tweet_new(request):
 			tweet = form.save(commit=False)
 			tweet.user = request.user
 			tweet.save()
-			return redirect('apps:tweet_list')
+			return redirect('apps:profile', pk=request.user.pk)
 	else:
 		form = TweetForm()
 	return render(request, 'apps/tweet_new.html', {'form': form})
