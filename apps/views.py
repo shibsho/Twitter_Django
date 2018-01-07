@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from .models import Tweet, Relationship, Like
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .forms import TweetForm, RegisterForm
@@ -19,8 +20,11 @@ def regist(request):
 def regist_save(request):
     form = RegisterForm(request.POST)
     if form.is_valid():
-        form.save()
-        return redirect('apps:profile', pk=request.user.pk)
+   	    new_user = form.save()
+   	    new_user = authenticate(username=form.cleaned_data['username'],
+   	                            password=form.cleaned_data['password1'],
+   	                            )
+   	    login(request, new_user)        
     return render(request, 'apps/regist.html', {'form': form, })
 
 
@@ -89,7 +93,7 @@ def tweet_new(request):
 			tweet = form.save(commit=False)
 			tweet.user = request.user
 			tweet.save()
-			return redirect('apps:tweet_list')
+			return redirect('apps:profile', pk=request.user.pk)
 	else:
 		form = TweetForm()
 	return render(request, 'apps/tweet_new.html', {'form': form})
